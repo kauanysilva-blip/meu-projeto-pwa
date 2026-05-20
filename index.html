@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste PWA + Python</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">🚀 Teste Vercel + Python</h2>
+        <form id="test-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Seu Nome</label>
+                <input type="text" id="name" required placeholder="Digite seu nome" class="w-full p-2.5 border rounded-md">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Relato do Near Miss</label>
+                <textarea id="message" required placeholder="O que aconteceu?" class="w-full p-2.5 border rounded-md"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-md cursor-pointer">
+                Enviar para o Python
+            </button>
+        </form>
+        <div id="response-box" class="mt-4 p-3 bg-gray-50 rounded-md text-sm text-gray-700 hidden border"></div>
+    </div>
+    <script>
+        document.getElementById('test-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const responseBox = document.getElementById('response-box');
+            responseBox.classList.remove('hidden');
+            responseBox.innerText = "Enviando dados para o servidor Python...";
+            const payload = {
+                name: document.getElementById('name').value,
+                message: document.getElementById('message').value
+            };
+            try {
+                const res = await fetch('/api/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                responseBox.className = "mt-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-md text-sm font-medium";
+                responseBox.innerText = data.message;
+            } catch (error) {
+                responseBox.className = "mt-4 p-3 bg-red-50 text-red-800 border border-red-200 rounded-md text-sm";
+                responseBox.innerText = "Erro ao falar com o Python. Lembre-se que o script do servidor precisa ser criado na pasta api.";
+            }
+        });
+    </script>
+</body>
+</html>
